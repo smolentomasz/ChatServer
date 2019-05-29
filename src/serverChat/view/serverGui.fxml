@@ -2,18 +2,19 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="serverChat.controller.ServerGuiController">
    <children>
-      <TextArea id="serverChatWindow" fx:id="serverChatWindow" layoutX="14.0" layoutY="38.0" prefHeight="316.0" prefWidth="422.0" />
-      <TextField id="messageSendServer" fx:id="messageSendServer" layoutX="14.0" layoutY="361.0" prefHeight="25.0" prefWidth="422.0" />
-      <Button id="btSendServer" fx:id="btSendServer" layoutX="448.0" layoutY="361.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="132.0" text="Send message" />
+      <TextArea id="serverChatWindow" fx:id="serverChatWindow" editable="false" layoutX="14.0" layoutY="38.0" prefHeight="354.0" prefWidth="422.0" />
       <TextField id="serverPortLabel" fx:id="serverPortLabel" layoutX="440.0" layoutY="38.0" />
       <Label layoutX="191.0" layoutY="14.0" text="Chat window" />
       <Label layoutX="504.0" layoutY="14.0" text="Port" />
       <Button id="btRunServer" fx:id="btRunServer" layoutX="479.0" layoutY="79.0" mnemonicParsing="false" onAction="#startServer" text="Run server" />
+      <Label layoutX="471.0" layoutY="175.0" text="Active clients list" />
+      <ListView fx:id="usersList" layoutX="440.0" layoutY="192.0" prefHeight="200.0" prefWidth="156.0" />
    </children>
 </AnchorPane>

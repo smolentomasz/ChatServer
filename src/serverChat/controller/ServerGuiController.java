@@ -13,8 +13,7 @@ public class ServerGuiController {
 
     @FXML
     private TextField serverPortLabel;
-    @FXML
-    private TextField messageSendServer;
+
     @FXML
     private Button btRunServer;
 
@@ -23,9 +22,8 @@ public class ServerGuiController {
         int enteredPort = Integer.valueOf(serverPortLabel.getText());
         int acctualPort = isPortTaken(enteredPort);
 
-        System.out.println("Server is staring at: " + acctualPort + " port!\n");
-
-        ChatServer.createServer(acctualPort);
+        ChatServer serwer = new ChatServer();
+        serwer.createServer(acctualPort);
         btRunServer.setDisable(true);
         serverPortLabel.setEditable(false);
     }

@@ -1,61 +1,59 @@
 package serverChat;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.Button;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 
 public class ChatServer {
     private static ServerSocket newServer;
     private static Socket newClient;
-    private static DataInputStream inputData;
-    private static DataOutputStream outputData;
 
-    public static void createServer(int serverPort) throws IOException {
+    public static void setServerWorkers(ArrayList<ServerWorker> serverWorkers) {
+        ChatServer.serverWorkers = serverWorkers;
+    }
+
+    private static ArrayList<ServerWorker> serverWorkers = new ArrayList<>();
+
+    public static ObservableList<String> getUsersListModel() {
+        return usersListModel;
+    }
+
+    private static ObservableList<String> usersListModel = FXCollections.observableArrayList();
+
+    public static ArrayList<ServerWorker> getServerWorkers() {
+        return serverWorkers;
+    }
+
+    public void createServer(int serverPort) throws IOException {
         TextArea serverChatWindow = (TextArea) Main.getMainScene().lookup("#serverChatWindow");
-        TextField messageSendInput = (TextField) Main.getMainScene().lookup("#messageSendServer");
-        Button sendMessage = (Button) Main.getMainScene().lookup("#btSendServer");
+
         serverChatWindow.setEditable(false);
+        serverChatWindow.setWrapText(true);
+
         newServer = new ServerSocket(serverPort);
 
         new Thread(() -> {
+            serverChatWindow.appendText("Server is staring at: " + serverPort + " port!\n");
             while(true){
-                System.out.println("Czekam na połaczenie...");
-            try {
-                String receivedMessage = "";
+                try {
+                serverChatWindow.appendText("Trying to accept client connection... \n");
                 newClient = newServer.accept();
-                inputData = new DataInputStream(newClient.getInputStream());
-                System.out.println("Show me: " + inputData);
-                outputData = new DataOutputStream(newClient.getOutputStream());
-                while(!receivedMessage.equals("logout")){
-                    receivedMessage = inputData.readUTF();
-                    serverChatWindow.appendText(receivedMessage + "\n");
+                serverChatWindow.appendText("New client are connected: " + newClient + "\n");
+                ServerWorker worker = new ServerWorker(this, newClient);
+                serverWorkers.add(worker);
+                worker.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-            }
-        }).start();
 
-        sendMessage.setOnAction(event -> {
-            try {
-                String messageToSend;
-                messageToSend = messageSendInput.getText();
-                serverChatWindow.appendText("Server: " + messageToSend + "\n");
-                outputData.writeUTF("Server: " + messageToSend);
-                messageSendInput.setText("");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+        }).start();
 
     }
 
